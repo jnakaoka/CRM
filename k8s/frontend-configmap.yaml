@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data:
+  config.js: |
+    window.env = {
+      API_URL: "http://crm-backend-service:8000"
+    };

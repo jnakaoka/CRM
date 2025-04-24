@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crm-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crm-backend
+  template:
+    metadata:
+      labels:
+        app: crm-backend
+    spec:
+      containers:
+        - name: crm-backend
+          image: crm-backend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MYSQL_HOST
+              value: mysql-service
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              value: admin_135
+            - name: MYSQL_DATABASE
+              value: crm_db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crm-backend-service
+spec:
+  selector:
+    app: crm-backend
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8000          # Porta interna (usada pelo frontend para consumir)
+      targetPort: 8000    # Porta no container
+      nodePort: 30080     # Porta exposta na máquina (você pode mudar ou deixar o K8s gerar uma)
